@@ -1,0 +1,46 @@
+Description: Fix build failure with node-tap v 8.0.0
+ Call t.end to finish tests (latest tap compatibility)
+Author: Jérémy Lal <kapouer@melix.org>
+Bug: https://github.com/thlorenz/inline-source-map/issues/18
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=844938
+Forwarded: https://github.com/thlorenz/inline-source-map/pull/19
+Applied-Upstream: Not yet
+Last-Update: 2016-11-24
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+Index: node-inline-source-map/test/inline-source-map.js
+===================================================================
+--- node-inline-source-map.orig/test/inline-source-map.js
++++ node-inline-source-map/test/inline-source-map.js
+@@ -226,6 +226,7 @@ test('generated mappings', function (t)
+     )
+     t.end()
+   })
++  t.end()
+ })
+ 
+ test('given mappings, with one having no original', function (t) {
+@@ -312,6 +313,7 @@ test('given mappings, with one having no
+     )
+     t.end()
+   })
++  t.end()
+ });
+ 
+ test('inline mapping url with charset opt', function(t){
+@@ -339,4 +341,5 @@ test('inline mapping url with charset op
+ 
+     t.end();
+   });
++  t.end();
+ });
+Index: node-inline-source-map/test/source-content.js
+===================================================================
+--- node-inline-source-map.orig/test/source-content.js
++++ node-inline-source-map/test/source-content.js
+@@ -140,4 +140,5 @@ test('generated mappings', function (t)
+     t.deepEqual(gen.toJSON()["sourcesContent"], [""])
+     t.end()
+   });
++  t.end();
+ })

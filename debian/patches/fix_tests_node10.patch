@@ -1,0 +1,203 @@
+Description: functions are serialized more faithfully in nodejs 10
+ refactor tests to match expectations (and be able to update the patch more easily)
+Author: Jérémy Lal <kapouer@melix.org>
+Last-Update: 2019-01-08
+Forwarded: no
+--- a/test/inline-source-map.js
++++ b/test/inline-source-map.js
+@@ -59,18 +59,20 @@
+           originalLine: 5,
+           originalColumn: 0,
+           source: 'foo.js',
+-          name: null } ]      
++          name: null } ]
+       , 'generates correct mappings'
+     )
+ 
++    var expected = {"version":3,"file":"","sources":["foo.js"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA","sourceRoot":""}
++
+     t.deepEqual(
+         JSON.parse(decode(gen.base64Encode()))
+-      , {"version":3,"file":"","sources":["foo.js"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA","sourceRoot":""}
++      , expected
+       , 'encodes generated mappings'
+     )
+     t.equal(
+         gen.inlineMappingUrl()
+-      , '//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImZvby5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtBQUNBO0FBQ0E7QUFDQTtBQUNBIiwiZmlsZSI6IiIsInNvdXJjZVJvb3QiOiIifQ=='
++      , '//# sourceMappingURL=data:application/json;charset=utf-8;base64,' + gen.base64Encode(JSON.stringify(expected))
+       , 'returns correct inline mapping url'
+     )
+     t.end()
+@@ -130,17 +132,18 @@
+             originalLine: 3,
+             originalColumn: 0,
+             source: 'bar.js',
+-            name: null } ]      
++            name: null } ]
+         , 'generates correct mappings'
+     )
++    var expected = {"version":3,"file":"","sources":["foo.js","bar.js"],"names":[],"mappings":"ACAA,ADAA;ACCA,ADAA;ACCA,ADAA;AACA;AACA","sourceRoot": ""}
+     t.deepEqual(
+         JSON.parse(decode(gen.base64Encode()))
+-      , {"version":3,"file":"","sources":["foo.js","bar.js"],"names":[],"mappings":"ACAA,ADAA;ACCA,ADAA;ACCA,ADAA;AACA;AACA","sourceRoot": ""}
++      , expected
+       , 'encodes generated mappings'
+     )
+     t.equal(
+         gen.inlineMappingUrl()
+-      , '//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImZvby5qcyIsImJhci5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUNBQSxBREFBO0FDQ0EsQURBQTtBQ0NBLEFEQUE7QUFDQTtBQUNBIiwiZmlsZSI6IiIsInNvdXJjZVJvb3QiOiIifQ=='
++      , '//# sourceMappingURL=data:application/json;charset=utf-8;base64,' + gen.base64Encode(JSON.stringify(expected))
+       , 'returns correct inline mapping url'
+     )
+     t.end()
+@@ -155,7 +158,7 @@
+             originalLine: 1,
+             originalColumn: 0,
+             source: 'one-liner.js',
+-            name: null } ]      
++            name: null } ]
+     , 'generates correct mappings'
+     )
+     t.end()
+@@ -215,7 +218,7 @@
+             originalLine: 3,
+             originalColumn: 0,
+             source: 'bar.js',
+-            name: null } ]        
++            name: null } ]
+       , 'generates correct mappings'
+     )
+ 
+@@ -266,14 +269,16 @@
+             name: null } ]
+       , 'adds correct mappings'
+     )
++
++    var expected = {"version":3,"file":"","sources":["foo.js","bar.js"],"names":[],"mappings":";;;;UACG;;oBCIH;8B", sourceRoot: ""}
+     t.deepEqual(
+         JSON.parse(decode(gen.base64Encode()))
+-      , {"version":3,"file":"","sources":["foo.js","bar.js"],"names":[],"mappings":";;;;UACG;;oBCIH;8B", sourceRoot: ""}
++      , expected
+       , 'encodes generated mappings'
+     )
+     t.equal(
+         gen.inlineMappingUrl()
+-      , '//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImZvby5qcyIsImJhci5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O1VBQ0c7O29CQ0lIOzhCIiwiZmlsZSI6IiIsInNvdXJjZVJvb3QiOiIifQ=='
++      , '//# sourceMappingURL=data:application/json;charset=utf-8;base64,' + gen.base64Encode(JSON.stringify(expected))
+       , 'returns correct inline mapping url'
+     )
+     t.end()
+@@ -303,7 +308,7 @@
+             originalLine: false,
+             originalColumn: false,
+             source: undefined,
+-            name: null } ]     
++            name: null } ]
+       , 'adds correct mappings'
+     )
+     t.deepEqual(
+@@ -313,6 +318,7 @@
+     )
+     t.end()
+   })
++
+   t.end()
+ });
+ 
+@@ -341,5 +347,5 @@
+ 
+     t.end();
+   });
+-  t.end();
++  t.end()
+ });
+--- a/test/source-content.js
++++ b/test/source-content.js
+@@ -40,20 +40,21 @@
+           "mappings": "AAAA;AACA;AACA;AACA;AACA",
+           "sourceRoot": "",
+           "sourcesContent": [
+-            "function foo() {\n  var hello = 'hello';\n  var world = 'world';\n  console.log('%s %s', hello, world);\n}"
++            "function foo () {\n  var hello = 'hello';\n  var world = 'world';\n  console.log('%s %s', hello, world);\n}"
+           ],
+         }
+       , 'includes source content'
+     )
++		var expected = '{"version":3,"sources":["foo.js"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA","file":"","sourceRoot":"","sourcesContent":["function foo () {\\n  var hello = \'hello\';\\n  var world = \'world\';\\n  console.log(\'%s %s\', hello, world);\\n}"]}'
+ 
+     t.equal(
+         decode(gen.base64Encode())
+-      , '{"version":3,"sources":["foo.js"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA","file":"","sourceRoot":"","sourcesContent":["function foo() {\\n  var hello = \'hello\';\\n  var world = \'world\';\\n  console.log(\'%s %s\', hello, world);\\n}"]}'
++      , expected
+       , 'encodes generated mappings including source content'
+     )
+     t.equal(
+         gen.inlineMappingUrl()
+-      , '//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImZvby5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtBQUNBO0FBQ0E7QUFDQTtBQUNBIiwiZmlsZSI6IiIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzQ29udGVudCI6WyJmdW5jdGlvbiBmb28oKSB7XG4gIHZhciBoZWxsbyA9ICdoZWxsbyc7XG4gIHZhciB3b3JsZCA9ICd3b3JsZCc7XG4gIGNvbnNvbGUubG9nKCclcyAlcycsIGhlbGxvLCB3b3JsZCk7XG59Il19'
++      , '//# sourceMappingURL=data:application/json;charset=utf-8;base64,' + gen.base64Encode(expected)
+       , 'returns correct inline mapping url including source content'
+     )
+     t.end()
+@@ -78,21 +79,23 @@
+           "mappings": "ACAA,ADAA;ACCA,ADAA;ACCA,ADAA;AACA;AACA",
+           "sourceRoot": "",
+           "sourcesContent": [
+-            "function foo() {\n  var hello = 'hello';\n  var world = 'world';\n  console.log('%s %s', hello, world);\n}",
+-            "function bar() {\n  console.log('yes?');\n}"
++            "function foo () {\n  var hello = 'hello';\n  var world = 'world';\n  console.log('%s %s', hello, world);\n}",
++            "function bar () {\n  console.log('yes?');\n}"
+           ],
+         }
+       , 'includes source content for both files'
+     )
+ 
++    var expected = '{"version":3,"sources":["foo.js","bar.js"],"names":[],"mappings":"ACAA,ADAA;ACCA,ADAA;ACCA,ADAA;AACA;AACA","file":"","sourceRoot":"","sourcesContent":["function foo () {\\n  var hello = \'hello\';\\n  var world = \'world\';\\n  console.log(\'%s %s\', hello, world);\\n}","function bar () {\\n  console.log(\'yes?\');\\n}"]}'
++
+     t.deepEqual(
+         decode(gen.base64Encode())
+-      , '{"version":3,"sources":["foo.js","bar.js"],"names":[],"mappings":"ACAA,ADAA;ACCA,ADAA;ACCA,ADAA;AACA;AACA","file":"","sourceRoot":"","sourcesContent":["function foo() {\\n  var hello = \'hello\';\\n  var world = \'world\';\\n  console.log(\'%s %s\', hello, world);\\n}","function bar() {\\n  console.log(\'yes?\');\\n}"]}'
++      , expected
+       , 'encodes generated mappings including source content'
+     )
+     t.equal(
+         gen.inlineMappingUrl()
+-      , '//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImZvby5qcyIsImJhci5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUNBQSxBREFBO0FDQ0EsQURBQTtBQ0NBLEFEQUE7QUFDQTtBQUNBIiwiZmlsZSI6IiIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzQ29udGVudCI6WyJmdW5jdGlvbiBmb28oKSB7XG4gIHZhciBoZWxsbyA9ICdoZWxsbyc7XG4gIHZhciB3b3JsZCA9ICd3b3JsZCc7XG4gIGNvbnNvbGUubG9nKCclcyAlcycsIGhlbGxvLCB3b3JsZCk7XG59IiwiZnVuY3Rpb24gYmFyKCkge1xuICBjb25zb2xlLmxvZygneWVzPycpO1xufSJdfQ=='
++      , '//# sourceMappingURL=data:application/json;charset=utf-8;base64,' + gen.base64Encode(expected)
+       , 'returns correct inline mapping url including source content'
+     )
+     t.end()
+@@ -114,20 +117,22 @@
+           ],
+           "names": [],
+           "mappings": "ACAA,ADAA;ACCA,ADAA;ACCA,ADAA;AACA;AACA",
+-          "sourcesContent": [ null, "function bar() {\n  console.log('yes?');\n}" ],
++          "sourcesContent": [ null, "function bar () {\n  console.log('yes?');\n}" ],
+           "sourceRoot": ""
+         }
+       , 'includes source content for the file with source content and [null] for the other file'
+     )
+ 
++    var expected = '{"version":3,"sources":["foo.js","bar.js"],"names":[],"mappings":"ACAA,ADAA;ACCA,ADAA;ACCA,ADAA;AACA;AACA","file":"","sourceRoot":"","sourcesContent":[null,"function bar () {\\n  console.log(\'yes?\');\\n}"]}'
++
+     t.deepEqual(
+         decode(gen.base64Encode())
+-      , '{"version":3,"sources":["foo.js","bar.js"],"names":[],"mappings":"ACAA,ADAA;ACCA,ADAA;ACCA,ADAA;AACA;AACA","file":"","sourceRoot":"","sourcesContent":[null,"function bar() {\\n  console.log(\'yes?\');\\n}"]}'
++      , expected
+       , 'encodes generated mappings including source content'
+     )
+     t.equal(
+         gen.inlineMappingUrl()
+-      , '//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImZvby5qcyIsImJhci5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUNBQSxBREFBO0FDQ0EsQURBQTtBQ0NBLEFEQUE7QUFDQTtBQUNBIiwiZmlsZSI6IiIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzQ29udGVudCI6W251bGwsImZ1bmN0aW9uIGJhcigpIHtcbiAgY29uc29sZS5sb2coJ3llcz8nKTtcbn0iXX0='
++      , '//# sourceMappingURL=data:application/json;charset=utf-8;base64,' + gen.base64Encode(expected)
+       , 'returns correct inline mapping url including source content'
+     )
+     t.end()
+@@ -140,5 +145,6 @@
+     t.deepEqual(gen.toJSON()["sourcesContent"], [""])
+     t.end()
+   });
+-  t.end();
++
++  t.end()
+ })

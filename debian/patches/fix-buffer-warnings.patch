@@ -1,0 +1,44 @@
+Subject: Fix warnings with newer node
+author: Bastien Roucariès <rouca@debian.org>
+
+forwarded: https://github.com/thlorenz/inline-source-map/issues/22
+
+Index: node-inline-source-map/index.js
+===================================================================
+--- node-inline-source-map.orig/index.js
++++ node-inline-source-map/index.js
+@@ -91,7 +91,7 @@ Generator.prototype.addSourceContent = f
+  */
+ Generator.prototype.base64Encode = function () {
+   var map = this.toString();
+-  return new Buffer(map).toString('base64');
++  return new Buffer.from(map).toString('base64');
+ };
+ 
+ /**
+Index: node-inline-source-map/test/inline-source-map.js
+===================================================================
+--- node-inline-source-map.orig/test/inline-source-map.js
++++ node-inline-source-map/test/inline-source-map.js
+@@ -15,7 +15,7 @@ var bar = '' + function bar () {
+ }
+ 
+ function decode(base64) {
+-  return new Buffer(base64, 'base64').toString();
++  return new Buffer.from(base64, 'base64').toString();
+ } 
+ 
+ function inspect(obj, depth) {
+Index: node-inline-source-map/test/source-content.js
+===================================================================
+--- node-inline-source-map.orig/test/source-content.js
++++ node-inline-source-map/test/source-content.js
+@@ -15,7 +15,7 @@ var bar = '' + function bar () {
+ }
+ 
+ function decode(base64) {
+-  return new Buffer(base64, 'base64').toString();
++  return new Buffer.from(base64, 'base64').toString();
+ } 
+ 
+ function inspect(obj, depth) {

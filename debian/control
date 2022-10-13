@@ -1,0 +1,26 @@
+Source: node-inline-source-map
+Testsuite: autopkgtest-pkg-nodejs
+Section: javascript
+Priority: optional
+Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.debian.org>
+Uploaders: Ross Gammon <rosco2@ubuntu.com>
+Build-Depends: debhelper-compat (= 13)
+ , dh-sequence-nodejs
+ , node-source-map <!nocheck>
+ , node-tap <!nocheck>
+Standards-Version: 4.6.0
+Homepage: https://github.com/thlorenz/inline-source-map
+Vcs-Git: https://salsa.debian.org/js-team/node-inline-source-map.git
+Vcs-Browser: https://salsa.debian.org/js-team/node-inline-source-map
+Rules-Requires-Root: no
+
+Package: node-inline-source-map
+Architecture: all
+Depends: ${misc:Depends}
+ , node-source-map
+Multi-Arch: foreign
+Description: base64 encoded source mappings for a generated file
+ Adds source mappings and base64 encodes them, so they can be inlined in your
+ generated file.
+ .
+ Node.js is an event-based server-side JavaScript engine.

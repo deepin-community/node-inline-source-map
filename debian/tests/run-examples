@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+PACKAGE=node-inline-source-map
+find  "/usr/share/doc/$PACKAGE/examples/" -name '*.js' -print0 | xargs -0 -n1 nodejs

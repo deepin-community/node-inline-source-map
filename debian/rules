@@ -1,0 +1,19 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+%:
+	dh $@
+
+override_dh_installexamples:
+ifeq (,$(filter nodoc,$(DEB_BUILD_OPTIONS) $(DEB_BUILD_PROFILES)))
+	dh_installexamples
+	find $(CURDIR)/debian/node-inline-source-map/usr/share/doc/node-inline-source-map/examples/ -name '*.js' -exec \
+		sed -i "s,require\s*[(]\s*'[.][.][^']*'\s*[)],require('inline-source-map'),g" {} \;
+else
+	@echo '**********************************************************'
+	@echo 'Skip example building (no doc)                            '
+	@echo '**********************************************************'
+endif

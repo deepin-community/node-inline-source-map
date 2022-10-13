@@ -1,0 +1,2 @@
+Tests: run-examples
+Depends: @, nodejs

@@ -1,0 +1,108 @@
+node-inline-source-map (0.6.2~git-6) unstable; urgency=medium
+
+  * Team upload
+
+  [ Debian Janitor ]
+  * Remove constraints unnecessary since buster:
+    + Build-Depends: Drop versioned constraint on dpkg-dev.
+
+  [ Yadd ]
+  * Update standards version to 4.6.0, no changes needed.
+  * Add "Rules-Requires-Root: no"
+  * Modernize debian/watch
+  * Fix GitHub tags regex
+  * Update lintian overrides
+  * Use dh-sequence-nodejs auto test & install
+
+ -- Yadd <yadd@debian.org>  Sun, 03 Oct 2021 17:57:28 +0200
+
+node-inline-source-map (0.6.2~git-5) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Remove constraints unnecessary since buster:
+    + Build-Depends: Drop versioned constraint on node-source-map, node-tap and
+      nodejs.
+    + node-inline-source-map: Drop versioned constraint on node-source-map and
+      nodejs in Depends.
+  * Bump debhelper from old 12 to 13.
+  * Update standards version to 4.5.1, no changes needed.
+
+ -- Jelmer Vernooĳ <jelmer@debian.org>  Wed, 15 Sep 2021 10:39:30 +0100
+
+node-inline-source-map (0.6.2~git-4) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Bump debhelper from old 11 to 12.
+  * Set debhelper-compat version in Build-Depends.
+  * Remove obsolete field Name from debian/upstream/metadata (already present in
+    machine-readable debian/copyright).
+  * Update standards version to 4.5.0, no changes needed.
+  * Apply multi-arch hints.
+    + node-inline-source-map: Add Multi-Arch: foreign.
+
+ -- Jelmer Vernooĳ <jelmer@debian.org>  Sat, 28 Aug 2021 20:47:36 +0100
+
+node-inline-source-map (0.6.2~git-3) unstable; urgency=medium
+
+  * Team upload
+  * Run debci only for nodejs (>= 10)
+
+ -- Bastien Roucariès <rouca@debian.org>  Wed, 09 Jan 2019 23:14:38 +0100
+
+node-inline-source-map (0.6.2~git-2) unstable; urgency=high
+
+  * Team upload
+  * Patch to update tests expectations (Closes: #918004)
+  * Remove one lintian override, no longer needed
+
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 08 Jan 2019 00:40:46 +0100
+
+node-inline-source-map (0.6.2~git-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version from github (not tagged but published
+    on npm).
+  * Fix warnings with newer node (>= 10)
+
+ -- Bastien Roucariès <rouca@debian.org>  Tue, 01 Jan 2019 21:58:12 +0100
+
+node-inline-source-map (0.6.1-5) unstable; urgency=medium
+
+  * Team upload
+  * FTBFS due nodejs (<= 8). Require nodejs >= 8
+  * Bump policy and compat (no changes)
+  * Move to salsa
+
+ -- Bastien Roucariès <rouca@debian.org>  Wed, 09 May 2018 10:43:15 +0200
+
+node-inline-source-map (0.6.1-4) unstable; urgency=medium
+
+  * Team upload.
+  * Bump policy (no changes)
+  * Honor debian/rules nocheck flags
+  * Use compat 10
+
+ -- Bastien Roucariès <rouca@debian.org>  Tue, 15 Aug 2017 11:02:35 +0200
+
+node-inline-source-map (0.6.1-3) experimental; urgency=medium
+
+  * Team upload.
+  * Fix examples.
+  * Improve autopkgtest.
+
+ -- Bastien Roucariès <rouca@debian.org>  Sun, 16 Apr 2017 23:06:11 +0200
+
+node-inline-source-map (0.6.1-2) unstable; urgency=medium
+
+  * Patch tests to fix FTBFS
+    Thanks to Jérémy Lal (Closes: #844938)
+  * Unapply patches from source
+  * Remove duplicate metadata from wrong location
+
+ -- Ross Gammon <rosco2@ubuntu.com>  Thu, 24 Nov 2016 21:22:44 +0100
+
+node-inline-source-map (0.6.1-1) unstable; urgency=low
+
+  * Initial release (Closes: #795114)
+
+ -- Ross Gammon <rosco2@ubuntu.com>  Sun, 28 Aug 2016 11:12:45 +0200

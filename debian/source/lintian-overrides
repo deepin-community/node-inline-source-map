@@ -1,0 +1,6 @@
+# The tests include one long line which is a false positive 
+# of these lintian warnings. This is test data and is not
+# meant to be editable source code. Several bugs have been 
+# submitted against lintian about this.
+source-is-missing test/source-content.js line 38 is 265 characters long (>256)
+source-contains-prebuilt-javascript-object test/source-content.js line 38 is 265 characters long (>256)
